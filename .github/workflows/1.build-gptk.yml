@@ -39,13 +39,17 @@ jobs:
           path: gptk_bottle.tar.gz
       - name: Package GPTK (Whisky)
         run: |
-          rm -rvf `brew --prefix game-porting-toolkit`/include
-          rm -rvf `brew --prefix game-porting-toolkit`/INSTALL_RECEIPT.json
-          rm -rvf `brew --prefix game-porting-toolkit`/share/man
-          find `brew --prefix game-porting-toolkit`/bin -type f -type l -not -name "wine64" -not -name "wine64-preloader" -not -name "wineserver" -delete
-          tar -zcvf gptk.tar.gz `brew --prefix game-porting-toolkit`
+          ditto `brew --prefix game-porting-toolkit` Libraries/Wine
+          touch Libraries/.keep
+          rm -rvf Libraries/Wine/include
+          rm -rvf Libraries/Wine/INSTALL_RECEIPT.json
+          rm -rvf Libraries/Wine/share/man
+          find Libraries/Wine/bin -type f -type l -not -name "wine64" -not -name "wine64-preloader" -not -name "wineserver" -delete
+          mkdir gptk
+          touch gptk/.keep
+          tar -zcvf gptk/gptk.tar.gz Libraries
       - name: Upload GPTK (Whisky)
         uses: actions/upload-artifact@v3
         with:
           name: GTPK ${{matrix.flavour}} (Whisky)
-          path: gptk.tar.gz
+          path: gptk
