@@ -22,8 +22,9 @@ jobs:
         name: Patch the formula
         run: |
           patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/enable-vulkan-sdl.patch
-      - name: Install and package GPTK
-        run: brew install --build-bottle apple/apple/game-porting-toolkit
+      - name: Install GPTK
+        run: |
+          brew install --build-bottle apple/apple/game-porting-toolkit
       - name: Package GPTK (Harbor)
           brew bottle apple/apple/game-porting-toolkit
           # Shove the tarball into a directory (else macOS will butcher them both when it unzip)
