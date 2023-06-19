@@ -26,8 +26,8 @@ jobs:
         run: |
           brew install --build-bottle apple/apple/game-porting-toolkit
       - name: Package GPTK (Harbor)
+        run: |
           brew bottle apple/apple/game-porting-toolkit
-          # Shove the tarball into a directory (else macOS will butcher them both when it unzip)
           mkdir gptk_bottle
           mv *.tar.gz gptk_bottle
           touch gptk_bottle/.keep
