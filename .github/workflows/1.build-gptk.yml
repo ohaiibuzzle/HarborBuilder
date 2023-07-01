@@ -4,6 +4,12 @@
 name: Build GPTK
 on:
   - workflow_dispatch
+  - push
+    on:
+      branches:
+        - senpai
+      tags:
+        - '*'
 
 jobs:
   build_gptk:
@@ -22,6 +28,9 @@ jobs:
         name: Patch the formula
         run: |
           patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/enable-vulkan-sdl.patch
+      - name: Patch rpaths
+        run: |
+          patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/whisky-rpath.patch
       - name: Install GPTK
         run: |
           brew install --build-bottle apple/apple/game-porting-toolkit
@@ -35,7 +44,7 @@ jobs:
       - name: Upload GPTK bottle (Harbor)
         uses: actions/upload-artifact@v3
         with:
-          name: GTPK ${{matrix.flavour}} (Harbor)
+          name: GPTK ${{matrix.flavour}} (Harbor)
           path: gptk_bottle.tar.gz
       - name: Package GPTK (Whisky)
         run: |
@@ -51,5 +60,5 @@ jobs:
       - name: Upload GPTK (Whisky)
         uses: actions/upload-artifact@v3
         with:
-          name: GTPK ${{matrix.flavour}} (Whisky)
+          name: GPTK ${{matrix.flavour}} (Whisky)
           path: gptk
