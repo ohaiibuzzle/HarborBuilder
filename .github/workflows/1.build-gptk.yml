@@ -2,13 +2,11 @@
 # and put the resulting Cellar into a dmg
 
 name: Build GPTK
+
 on:
-  - workflow_dispatch
-  - push
-    branches:
-      - 'senpai'
-    tags:
-      - '*'
+  push:
+    branches: [ senpai ]
+  workflow_dispatch:
 
 jobs:
   build_gptk:
