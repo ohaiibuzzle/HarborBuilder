@@ -23,6 +23,7 @@ jobs:
           USE_YOUR_TOKEN_LMAO: ${{ secrets.USE_YOUR_TOKEN_LMAO }}
         run: |
           curl -O 'https://download.developer.apple.com/Developer_Tools/Game_porting_toolkit_1_beta_4/Game_porting_toolkit_1_beta_4.dmg' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/116.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'Connection: keep-alive' -H 'Referer: https://developer.apple.com/' -H "Cookie: ADCDownloadAuth='$USE_YOUR_TOKEN_LMAO'" -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: same-site' -H 'Sec-Fetch-User: ?1' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache'
+          hdiutil attach Game_porting_toolkit_1_beta_4.dmg
       - name: Install compiler
         run: |
           brew install apple/apple/game-porting-toolkit-compiler
@@ -38,7 +39,6 @@ jobs:
           brew install --build-bottle apple/apple/game-porting-toolkit
       - name: Extract Apple's GPTK binaries
         run: |
-          hdiutil attach Game_porting_toolkit_1_beta_4.dmg
           ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ `brew --prefix game-porting-toolkit`/lib/
           hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.0
       - name: Package GPTK (Harbor)
