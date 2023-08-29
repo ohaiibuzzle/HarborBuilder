@@ -31,6 +31,12 @@ jobs:
       - name: Install GPTK
         run: |
           brew install --build-bottle apple/apple/game-porting-toolkit
+      - name: Download Apple's GPTK binaries from Apple
+        run: |
+          wget https://download.developer.apple.com/Developer_Tools/Game_porting_toolkit_1_beta_4/Game_porting_toolkit_1_beta_4.dmg
+          hdiutil attach Game_porting_toolkit_1_beta_4.dmg
+          ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ `brew --prefix game-porting-toolkit`/lib/
+          hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.0
       - name: Package GPTK (Harbor)
         run: |
           brew bottle apple/apple/game-porting-toolkit
