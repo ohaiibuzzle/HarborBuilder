@@ -37,16 +37,13 @@ jobs:
       - name: Install GPTK
         run: |
           brew install --build-bottle apple/apple/game-porting-toolkit
-      - name: Extract Apple's GPTK binaries
-        run: |
-          ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ `brew --prefix game-porting-toolkit`/lib/
-          hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.0
       - name: Package GPTK (Harbor)
         run: |
           brew bottle apple/apple/game-porting-toolkit
           mkdir gptk_bottle
           mv *.tar.gz gptk_bottle
           touch gptk_bottle/.keep
+          ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ gptk_bottle/gptk_libs
           tar -zcvf gptk_bottle.tar.gz gptk_bottle          
       - name: Upload GPTK bottle (Harbor)
         uses: actions/upload-artifact@v3
@@ -61,6 +58,7 @@ jobs:
           rm -rvf Libraries/Wine/INSTALL_RECEIPT.json
           rm -rvf Libraries/Wine/share/man
           find Libraries/Wine/bin -type f -type l -not -name "wine64" -not -name "wine64-preloader" -not -name "wineserver" -delete
+          ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ Libraries/Wine/lib
           mkdir gptk
           touch gptk/.keep
           tar -zcvf gptk/gptk.tar.gz Libraries
@@ -69,3 +67,6 @@ jobs:
         with:
           name: GPTK ${{matrix.flavour}} (Whisky)
           path: gptk
+      - name: Eject GPTK disk img
+        run: |
+          hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.0
