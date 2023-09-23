@@ -22,7 +22,7 @@ jobs:
         env: 
           USE_YOUR_TOKEN_LMAO: ${{ secrets.USE_YOUR_TOKEN_LMAO }}
         run: |
-          $THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE
+          sh -c $THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE
           hdiutil attach Game_porting_toolkit_1_beta_4.dmg
       - name: Install compiler
         run: |
