@@ -20,9 +20,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Download Apple's GPTK
         env: 
-          USE_YOUR_TOKEN_LMAO: ${{ secrets.USE_YOUR_TOKEN_LMAO }}
+          THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE: ${{ secrets.THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE }}
         run: |
-          sh -c $THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE
+          $THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE
           hdiutil attach Game_porting_toolkit_1_beta_4.dmg
       - name: Install compiler
         run: |
