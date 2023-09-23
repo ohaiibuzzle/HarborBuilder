@@ -22,7 +22,7 @@ jobs:
         env: 
           THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE: ${{ secrets.THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE }}
         run: |
-          $THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE
+          sh -c $THE_ENTIRE_CURL_COMMAND_I_HATE_YOU_APPLE
           hdiutil attach Game_porting_toolkit_1_beta_4.dmg
       - name: Install compiler
         run: |
