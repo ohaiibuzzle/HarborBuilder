@@ -26,12 +26,12 @@ jobs:
           hdiutil attach Game_porting_toolkit_1.dmg
       - name: Prepare msync patch
         run: |
-          wget https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz
+          wget -q https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz
           export BUILDER_WORKDIR=`pwd`
           mkdir /tmp/cxsrc
-          tar -xvf crossover-sources-22.1.1.tar.gz -C /tmp/cxsrc
+          tar -xf crossover-sources-22.1.1.tar.gz -C /tmp/cxsrc
           cd /tmp/cxsrc/sources
-          git init . && git add . && git commit -m "Initial commit"
+          git init . 2>&1 > /dev/null && git add . 2>&1 > /dev/null && git commit -m "Initial commit" 2>&1 > /dev/null
           cd wine
           patch -r . < $BUILDER_WORKDIR/patches/wine-msync/msync-cx22.patch
           cd ../
@@ -39,7 +39,7 @@ jobs:
           git format-patch -1 HEAD
           mv 0001-msync-patch.patch $BUILDER_WORKDIR/patches/msync.patch
           cd $BUILDER_WORKDIR
-          rm -rvf /tmp/cxsrc crossover-sources-22.1.1.tar.gz
+          rm -rf /tmp/cxsrc crossover-sources-22.1.1.tar.gz
           # Chop the msync patch to remove the email bits by removing everything up to the first line starting with "diff"
           # without removing the line itself
           FIRST_DIFF_LINE=`grep -n "^diff" patches/msync.patch | head -n 1 | cut -d ":" -f 1`
