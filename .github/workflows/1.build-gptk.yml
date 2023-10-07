@@ -32,7 +32,7 @@ jobs:
         run: |
           patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/enable-vulkan-sdl.patch
       - name: Prepare msync patch
-        run:
+        run: |
           wget https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz
           export BUILDER_WORKDIR=`pwd`
           mkdir /tmp/cxsrc
