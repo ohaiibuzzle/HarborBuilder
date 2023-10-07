@@ -1,0 +1,3 @@
+[submodule "patches/wine-msync"]
+	path = patches/wine-msync
+	url = https://github.com/marzent/wine-msync

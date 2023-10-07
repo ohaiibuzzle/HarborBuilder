@@ -31,9 +31,31 @@ jobs:
         name: Patch the formula
         run: |
           patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/enable-vulkan-sdl.patch
-      - name: Patch rpaths
+      - name: Prepare msync patch
+        run:
+          wget https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz
+          export BUILDER_WORKDIR=`pwd`
+          mkdir /tmp/cxsrc
+          tar -xvf crossover-sources-22.1.1.tar.gz -C /tmp/cxsrc
+          cd /tmp/cxsrc/sources
+          git init . && git add . && git commit -m "Initial commit"
+          cd wine
+          patch -r . < $BUILDER_WORKDIR/patches/wine-msync/msync-cx22.patch
+          cd ../
+          git add . && git commit -m "msync patch"
+          git format-patch -1 HEAD
+          mv 0001-msync-patch.patch $BUILDER_WORKDIR/patches/msync.patch
+          cd $BUILDER_WORKDIR
+          rm -rvf /tmp/cxsrc crossover-sources-22.1.1.tar.gz
+          # Chop the msync patch to remove the email bits by removing everything up to the first line starting with "diff"
+          # without removing the line itself
+          FIRST_DIFF_LINE=`grep -n "^diff" patches/msync.patch | head -n 1 | cut -d ":" -f 1`
+          eval FIRST_DIFF_LINE=$((FIRST_DIFF_LINE-1))
+          sed -i '' "1,$FIRST_DIFF_LINE d" patches/msync.patch
+      - name: Perform general patches
         run: |
           patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/whisky-rpath.patch
+          cat patches/msync.patch >> `brew --repo apple/apple`/Formula/game-porting-toolkit.rb
       - name: Install GPTK
         run: |
           brew install --build-bottle apple/apple/game-porting-toolkit
