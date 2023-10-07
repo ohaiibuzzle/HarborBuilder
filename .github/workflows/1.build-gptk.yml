@@ -41,7 +41,7 @@ jobs:
           git format-patch -1 HEAD
           mv 0001-msync-patch.patch $BUILDER_WORKDIR/patches/msync.patch
           cd $BUILDER_WORKDIR
-          rm -rf /tmp/cxsrc crossover-sources-22.1.1.tar.gz
+          rm -rf /tmp/cxsrc crossover-sources-22.1.1.tar.gz || true # we don't care if this fails
           # Chop the msync patch to remove the email bits by removing everything up to the first line starting with "diff"
           # without removing the line itself
           FIRST_DIFF_LINE=`grep -n "^diff" patches/msync.patch | head -n 1 | cut -d ":" -f 1`
