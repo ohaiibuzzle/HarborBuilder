@@ -92,3 +92,7 @@ jobs:
       - name: Eject GPTK disk img
         run: |
           hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.0
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
+        timeout-minutes: 15
