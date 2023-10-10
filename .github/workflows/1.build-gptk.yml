@@ -26,27 +26,6 @@ jobs:
         run: |
           curl -O 'https://download.developer.apple.com/Developer_Tools/Game_porting_toolkit_1.0/Game_porting_toolkit_1.dmg' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Referer: https://developer.apple.com/' -H "Cookie: $USE_YOUR_TOKEN_LMAO" -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: same-site' -H 'Sec-Fetch-User: ?1' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache'
           hdiutil attach Game_porting_toolkit_1.dmg
-      - name: Prepare msync patch
-        run: |
-          wget -q https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz
-          export BUILDER_WORKDIR=`pwd`
-          mkdir /tmp/cxsrc
-          tar -xf crossover-sources-22.1.1.tar.gz -C /tmp/cxsrc
-          cd /tmp/cxsrc/sources
-          git init . 2>&1 > /dev/null && git add . 2>&1 > /dev/null && git commit -m "Initial commit" 2>&1 > /dev/null
-          cd wine
-          patch -r . < $BUILDER_WORKDIR/patches/wine-msync/msync-cx22.patch
-          cd ../
-          git add . && git commit -m "msync patch"
-          git format-patch -1 HEAD
-          mv 0001-msync-patch.patch $BUILDER_WORKDIR/patches/msync.patch
-          cd $BUILDER_WORKDIR
-          rm -rf /tmp/cxsrc crossover-sources-22.1.1.tar.gz || true # we don't care if this fails
-          # Chop the msync patch to remove the email bits by removing everything up to the first line starting with "diff"
-          # without removing the line itself
-          FIRST_DIFF_LINE=`grep -n "^diff" patches/msync.patch | head -n 1 | cut -d ":" -f 1`
-          eval FIRST_DIFF_LINE=$((FIRST_DIFF_LINE-1))
-          sed -i '' "1,$FIRST_DIFF_LINE d" patches/msync.patch
       - name: Install compiler
         run: |
           brew install apple/apple/game-porting-toolkit-compiler
