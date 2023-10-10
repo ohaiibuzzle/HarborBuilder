@@ -32,14 +32,13 @@ jobs:
       - if: matrix.flavour == 'Vulkan'
         name: Patch the formula
         run: |
-          patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/enable-vulkan-sdl.patch
+          patch game-porting-toolkit.rb < patches/enable-vulkan-sdl.patch
       - name: Perform general patches
         run: |
-          patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/whisky-rpath.patch
-          patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/msync.patch
+          patch game-porting-toolkit.rb < patches/whisky-rpath.patch
       - name: Install GPTK
         run: |
-          brew install --build-bottle apple/apple/game-porting-toolkit
+          brew install --build-bottle ./game-porting-toolkit.rb
       - name: Package GPTK (Harbor)
         run: |
           brew bottle apple/apple/game-porting-toolkit
