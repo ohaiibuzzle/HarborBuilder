@@ -36,7 +36,7 @@ jobs:
       - name: Perform general patches
         run: |
           patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/whisky-rpath.patch
-          cat patches/msync.patch >> `brew --repo apple/apple`/Formula/game-porting-toolkit.rb
+          patch `brew --repo apple/apple`/Formula/game-porting-toolkit.rb < patches/msync.patch
       - name: Install GPTK
         run: |
           brew install --build-bottle apple/apple/game-porting-toolkit
