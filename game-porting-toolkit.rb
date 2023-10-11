@@ -90369,7 +90369,7 @@ new file mode 100644
 index 000000000..4568d8655
 --- /dev/null
 +++ b/wine/dlls/ntdll/unix/msync.c
-@@ -0,0 +1,1493 @@
+@@ -0,0 +1,1494 @@
 +/*
 + * mach semaphore-based synchronization objects
 + *
@@ -90419,6 +90419,7 @@ index 000000000..4568d8655
 +# include <mach/task.h>
 +# include <mach/semaphore.h>
 +# include <mach/error.h>
++# include <mach/mach_error.h>
 +# include <servers/bootstrap.h>
 +# include <os/lock.h>
 +#endif
@@ -93132,7 +93133,7 @@ new file mode 100644
 index 000000000..f79d6e7ab
 --- /dev/null
 +++ b/wine/server/msync.c
-@@ -0,0 +1,907 @@
+@@ -0,0 +1,908 @@
 +/*
 + * mach semaphore-based synchronization objects
 + *
@@ -93173,6 +93174,7 @@ index 000000000..f79d6e7ab
 +# include <mach/task.h>
 +# include <mach/semaphore.h>
 +# include <mach/error.h>
++# include <mach/mach_error.h>
 +# include <servers/bootstrap.h>
 +#endif
 +#include <sched.h>
