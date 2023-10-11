@@ -38,7 +38,7 @@ jobs:
           patch game-porting-toolkit.rb < patches/whisky-rpath.patch
       - name: Install GPTK
         run: |
-          brew install --build-bottle ./game-porting-toolkit.rb
+          brew install --build-bottle ./game-porting-toolkit.rb || true 
       - name: Package GPTK (Harbor)
         run: |
           brew bottle apple/apple/game-porting-toolkit
