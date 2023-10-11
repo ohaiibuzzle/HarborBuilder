@@ -93133,7 +93133,7 @@ new file mode 100644
 index 000000000..f79d6e7ab
 --- /dev/null
 +++ b/wine/server/msync.c
-@@ -0,0 +1,908 @@
+@@ -0,0 +1,910 @@
 +/*
 + * mach semaphore-based synchronization objects
 + *
@@ -93172,6 +93172,7 @@ index 000000000..f79d6e7ab
 +# include <mach/message.h>
 +# include <mach/port.h>
 +# include <mach/task.h>
++# include <mach/thread_act.h>
 +# include <mach/semaphore.h>
 +# include <mach/error.h>
 +# include <mach/mach_error.h>
@@ -93180,6 +93181,7 @@ index 000000000..f79d6e7ab
 +#include <sched.h>
 +#include <pthread.h>
 +#include <unistd.h>
++#include <signal.h>
 +
 +#include "ntstatus.h"
 +#define WIN32_NO_STATUS
