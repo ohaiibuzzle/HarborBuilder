@@ -30,26 +30,26 @@ jobs:
         run: |
           brew tap apple/apple
           # Chop off the head of the formula (keep only the patch section after __END__)
-          sed '' -e '1,/^__END__$/d' `brew --repo apple/apple`/Formula/game-porting-toolkit.rb > gptk_basepatch.patch
+          sed -n '/__END__/,$p' `brew --repo apple/apple`/Formula/game-porting-toolkit.rb | sed '1d' > gptk_basepatch.patch
       - name: Apply patches to cxwine
         run: |
-          WORKSPACE=`pwd`
           wget https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz -O crossover-sources.tar.gz
+          WORKSPACE=$(pwd)
           mkdir /tmp/cxsrc
-          tar -xvf crossover-sources.tar.gz -C /tmp/cxsrc
+          tar -xf crossover-sources.tar.gz -C /tmp/cxsrc
           cd /tmp/cxsrc/sources
           git init . 2>&1 >/dev/null && git add . && git commit -m "Initial commit" 2>&1 >/dev/null
-          patch -g0 -f -p1 < $WORKSPACE/gptk_basepatch.patch
+          patch -g0 -f -p0 < $WORKSPACE/gptk_basepatch.patch
           git add . && git commit -m "Apply base patch" 2>&1 >/dev/null
           cd wine
-          patch -g0 -f -p1 < $WORKSPACE/patches/msync-cx22.patch
+          patch -g0 -f < $WORKSPACE/patches/wine-msync/msync-cx22.patch
           cd ..
           git add . && git commit -m "Apply msync patch" 2>&1 >/dev/null
           # Now we have a patched cxwine in /tmp/cxsrc, diff it against the original and put it into the formula template we produced earlier
           git format-patch -2 --stdout >> $WORKSPACE/game-porting-toolkit.rb
           # Clean up
           cd $WORKSPACE
-          sudo rm -rf /tmp/cxsrc crossover-sources.tar.gz
+          rm -rf /tmp/cxsrc crossover-sources.tar.gz || true
       - name: Install compiler
         run: |
           brew install apple/apple/game-porting-toolkit-compiler
