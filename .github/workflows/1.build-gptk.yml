@@ -80,7 +80,9 @@ jobs:
           git add . && git commit -m "Initial commit" 2>&1 >/dev/null
           patch -g0 -f -p0 < $WORKSPACE/gptk_basepatch.patch
           git add . && git commit -m "Apply base patch" 2>&1 >/dev/null
-          git apply --directory=wine/ --whitespace=fix $WORKSPACE/patches/wine-msync/msync-cx22.patch
+          cd wine
+          patch -g0 -f < $WORKSPACE/patches/wine-msync/msync-cx22.patch
+          cd ..
           git add . && git commit -m "Apply msync patch" 2>&1 >/dev/null
           # Now we have a patched cxwine in /tmp/cxsrc, diff it against the original and put it into the formula template we produced earlier
           git format-patch -2 --stdout >> $WORKSPACE/game-porting-toolkit.rb
