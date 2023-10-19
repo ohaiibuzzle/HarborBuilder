@@ -151,6 +151,13 @@ jobs:
         with:
           name: GPTK ${{matrix.flavour}} (Whisky)
           path: gptk
+
+      - name: Upload the formula used to build GPTK
+        uses: actions/upload-artifact@v3
+        with:
+          name: GPTK ${{matrix.flavour}} formula
+          path: game-porting-toolkit.rb
+      
       - name: Eject GPTK disk img
         run: |
           hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.0
