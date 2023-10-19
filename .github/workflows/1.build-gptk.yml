@@ -20,39 +20,99 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
+      - name: Load GPTK from cache if it exists
+        id: gptk-cache
+        uses: actions/cache@v3
+        with:
+          path: Game_porting_toolkit_1.dmg
+          key: gptk-1.0
+
       - name: Download Apple's GPTK
+        if: steps.gptk-cache.outputs.cache-hit != 'true'
         env: 
           USE_YOUR_TOKEN_LMAO: ${{ secrets.USE_YOUR_TOKEN_LMAO }}
         run: |
           curl -O 'https://download.developer.apple.com/Developer_Tools/Game_porting_toolkit_1.0/Game_porting_toolkit_1.dmg' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Referer: https://developer.apple.com/' -H "Cookie: $USE_YOUR_TOKEN_LMAO" -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: same-site' -H 'Sec-Fetch-User: ?1' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache'
+  
+      - name: Save GPTK to cache
+        if: steps.gptk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          key: gptk-1.0
+          path: Game_porting_toolkit_1.dmg
+
+      - name: Mounts GPTK disk image
+        run: |
           hdiutil attach Game_porting_toolkit_1.dmg
+
       - name: Prepare base GPTK patches
         run: |
           brew tap apple/apple
           # Chop off the head of the formula (keep only the patch section after __END__)
           sed -n '/__END__/,$p' `brew --repo apple/apple`/Formula/game-porting-toolkit.rb | sed '1d' > gptk_basepatch.patch
-      - name: Apply patches to cxwine
+
+      - name: Load CXWine Sources from cache
+        id: cxwine-cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/cxsrc
+          key: cxwine-22.1.1
+
+      - name: Download CXWine Sources
+        if: steps.cxwine-cache.outputs.cache-hit != 'true'
         run: |
           wget https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz -O crossover-sources.tar.gz
-          WORKSPACE=$(pwd)
           mkdir /tmp/cxsrc
           tar -xf crossover-sources.tar.gz -C /tmp/cxsrc
+
+      - name: Save CXWine Sources to cache
+        if: steps.cxwine-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          key: cxwine-22.1.1
+          path: /tmp/cxsrc
+
+      - name: Apply patches to cxwine
+        run: |
+          WORKSPACE=$(pwd)
+          tar -xf crossover-sources.tar.gz -C /tmp/cxsrc
           cd /tmp/cxsrc/sources
-          git init . 2>&1 >/dev/null && git add . && git commit -m "Initial commit" 2>&1 >/dev/null
-          patch -g0 -f -p0 < $WORKSPACE/gptk_basepatch.patch
+          git init . 2>&1 >/dev/null && git config --local gc.auto 0
+          git add . && git commit -m "Initial commit" 2>&1 >/dev/null
+          git apply --whitespace=fix $WORKSPACE/gptk_basepatch.patch
           git add . && git commit -m "Apply base patch" 2>&1 >/dev/null
-          cd wine
-          patch -g0 -f < $WORKSPACE/patches/wine-msync/msync-cx22.patch
-          cd ..
+          git apply --directory=wine/ --whitespace=fix $WORKSPACE/patches/wine-msync/msync-cx22.patch
           git add . && git commit -m "Apply msync patch" 2>&1 >/dev/null
           # Now we have a patched cxwine in /tmp/cxsrc, diff it against the original and put it into the formula template we produced earlier
           git format-patch -2 --stdout >> $WORKSPACE/game-porting-toolkit.rb
-          # Clean up
+          # Go back to the original directory
           cd $WORKSPACE
-          rm -rf /tmp/cxsrc crossover-sources.tar.gz || true
+
+      - name: Check cache for compiler
+        id: compiler-cache
+        uses: actions/cache@v3
+        with:
+          path: /usr/local/Cellar/game-porting-toolkit-compiler
+          key: game-porting-toolkit-compiler-0.1
+
       - name: Install compiler
+        if: steps.compiler-cache.outputs.cache-hit != 'true'
         run: |
           brew install apple/apple/game-porting-toolkit-compiler
+
+      - name: Save compiler to cache
+        if: steps.compiler-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          key: game-porting-toolkit-compiler-0.1
+          path: /usr/local/Cellar/game-porting-toolkit-compiler
+        
+      - name: Relink compiler
+        if: steps.compiler-cache.outputs.cache-hit == 'true'
+        run: |
+          brew install apple/apple/game-porting-toolkit-compiler
+          brew link game-porting-toolkit-compiler
+
       - if: matrix.flavour == 'Vulkan'
         name: Patch the formula
         run: |
