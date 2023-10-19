@@ -75,11 +75,10 @@ jobs:
       - name: Apply patches to cxwine
         run: |
           WORKSPACE=$(pwd)
-          tar -xf crossover-sources.tar.gz -C /tmp/cxsrc
           cd /tmp/cxsrc/sources
           git init . 2>&1 >/dev/null && git config --local gc.auto 0
           git add . && git commit -m "Initial commit" 2>&1 >/dev/null
-          git apply --whitespace=fix $WORKSPACE/gptk_basepatch.patch
+          patch -g0 -f -p0 < $WORKSPACE/gptk_basepatch.patch
           git add . && git commit -m "Apply base patch" 2>&1 >/dev/null
           git apply --directory=wine/ --whitespace=fix $WORKSPACE/patches/wine-msync/msync-cx22.patch
           git add . && git commit -m "Apply msync patch" 2>&1 >/dev/null
