@@ -112,7 +112,7 @@ jobs:
         if: steps.compiler-cache.outputs.cache-hit == 'true'
         run: |
           brew install apple/apple/game-porting-toolkit-compiler
-          brew link game-porting-toolkit-compiler
+          ln -s /usr/local/Cellar/game-porting-toolkit-compiler/0.1/ /usr/local/opt/game-porting-toolkit-compiler
 
       - if: matrix.flavour == 'Vulkan'
         name: Patch the formula
