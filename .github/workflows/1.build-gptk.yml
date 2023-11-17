@@ -144,7 +144,7 @@ jobs:
           rm -rvf Libraries/Wine/INSTALL_RECEIPT.json
           rm -rvf Libraries/Wine/share/man
           find Libraries/Wine/bin -type f -type l -not -name "wine64" -not -name "wine64-preloader" -not -name "wineserver" -delete
-          ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ Libraries/Wine/lib
+          ditto /Volumes/Game\ Porting\ Toolkit-1.1/redist/lib/ Libraries/Wine/lib
           mkdir gptk
           touch gptk/.keep
           tar -zcvf gptk/gptk.tar.gz Libraries
