@@ -30,7 +30,7 @@ class GamePortingToolkit < Formula
   homepage "https://developer.apple.com/"
   url "https://media.codeweavers.com/pub/crossover/source/crossover-sources-22.1.1.tar.gz", using: TarballDownloadStrategy
   sha256 "cdfe282ce33788bd4f969c8bfb1d3e2de060eb6c296fa1c3cdf4e4690b8b1831"
-  patch :p0, :DATA
+  patch :DATA
 
   depends_on arch: :x86_64
   depends_on "game-porting-toolkit-compiler"
@@ -83,7 +83,7 @@ class GamePortingToolkit < Formula
     ENV.append "GSTREAMER_LIBS", "-lglib-2.0 -lgmodule-2.0 -lgstreamer-1.0 -lgstaudio-1.0 -lgstvideo-1.0 -lgstgl-1.0 -lgobject-2.0"
 
     # We also need to tell the linker to add Homebrew to the rpath stack.
-    ENV.append "LDFLAGS", "-lSystem -L#{HOMEBREW_PREFIX}/lib -Wl,-rpath,#{HOMEBREW_PREFIX}/lib -Wl,-rpath,@executable_path/../lib/external"
+    ENV.append "LDFLAGS", "-lSystem -L#{HOMEBREW_PREFIX}/lib -Wl,-rpath,@executable_path/../lib,-rpath,#{HOMEBREW_PREFIX}/lib -Wl,-rpath,@executable_path/../lib/external"
 
     # Common compiler flags for both Mach-O and PE binaries.
     ENV.append_to_cflags "-O3 -Wno-implicit-function-declaration -Wno-format -Wno-deprecated-declarations -Wno-incompatible-pointer-types"
