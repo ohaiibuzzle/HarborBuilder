@@ -26,26 +26,26 @@ jobs:
         id: gptk-cache
         uses: actions/cache@v3
         with:
-          path: Game_porting_toolkit_1.dmg
-          key: gptk-1.0
+          path: Game_Porting_Toolkit_1.1.dmg
+          key: gptk-1.1
 
       - name: Download Apple's GPTK
         if: steps.gptk-cache.outputs.cache-hit != 'true'
         env: 
           USE_YOUR_TOKEN_LMAO: ${{ secrets.USE_YOUR_TOKEN_LMAO }}
         run: |
-          curl -O 'https://download.developer.apple.com/Developer_Tools/Game_porting_toolkit_1.0/Game_porting_toolkit_1.dmg' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Referer: https://developer.apple.com/' -H "Cookie: $USE_YOUR_TOKEN_LMAO" -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: same-site' -H 'Sec-Fetch-User: ?1' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache'
+          curl -O 'https://download.developer.apple.com/Developer_Tools/Game_Porting_Toolkit_1.1/Game_Porting_Toolkit_1.1.dmg' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Referer: https://developer.apple.com/' -H "Cookie: $USE_YOUR_TOKEN_LMAO" -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-Fetch-Dest: document' -H 'Sec-Fetch-Mode: navigate' -H 'Sec-Fetch-Site: same-site' -H 'Sec-Fetch-User: ?1' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache'
   
       - name: Save GPTK to cache
         if: steps.gptk-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v3
         with:
-          key: gptk-1.0
-          path: Game_porting_toolkit_1.dmg
+          key: gptk-1.1
+          path: Game_Porting_Toolkit_1.1.dmg
 
       - name: Mounts GPTK disk image
         run: |
-          hdiutil attach Game_porting_toolkit_1.dmg
+          hdiutil attach Game_Porting_Toolkit_1.1.dmg
 
       - name: Prepare base GPTK patches
         run: |
@@ -162,7 +162,7 @@ jobs:
       
       - name: Eject GPTK disk img
         run: |
-          hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.0
+          hdiutil detach /Volumes/Game\ Porting\ Toolkit-1.1
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
