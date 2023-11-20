@@ -129,7 +129,7 @@ jobs:
           mkdir gptk_bottle
           mv *.tar.gz gptk_bottle
           touch gptk_bottle/.keep
-          ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ gptk_bottle/gptk_libs
+          ditto /Volumes/Game\ Porting\ Toolkit-1.1/redist/lib/ gptk_bottle/gptk_libs
           tar -zcvf gptk_bottle.tar.gz gptk_bottle          
       - name: Upload GPTK bottle (Harbor)
         uses: actions/upload-artifact@v3
