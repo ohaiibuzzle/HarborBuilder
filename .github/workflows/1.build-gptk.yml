@@ -106,7 +106,7 @@ jobs:
       - name: Install compiler
         if: steps.compiler-cache.outputs.cache-hit != 'true'
         run: |
-          arch -x86_64 /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler
+          arch -x86_64 /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler pkg-config
 
       - name: Save compiler to cache
         if: steps.compiler-cache.outputs.cache-hit != 'true'
