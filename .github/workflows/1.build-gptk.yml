@@ -58,6 +58,10 @@ jobs:
           # Chop off the head of the formula (keep only the patch section after __END__)
           sed -n '/__END__/,$p' `arch -x86_64 /usr/local/bin/brew --repo apple/apple`/Formula/game-porting-toolkit.rb | sed '1d' > gptk_basepatch.patch
 
+      - name: Install extra packages to system brew
+        run: |
+          /opt/homebrew/bin/brew install pkg-config
+
       - name: Load CXWine Sources from cache
         id: cxwine-cache
         uses: actions/cache@v3
@@ -106,7 +110,7 @@ jobs:
       - name: Install compiler
         if: steps.compiler-cache.outputs.cache-hit != 'true'
         run: |
-          arch -x86_64 /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler pkg-config
+          arch -x86_64 /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler
 
       - name: Save compiler to cache
         if: steps.compiler-cache.outputs.cache-hit != 'true'
