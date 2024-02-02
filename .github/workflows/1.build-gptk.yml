@@ -22,6 +22,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
+
+      - name: Setup x86_64 brew
+        run: |
+          arch -x86_64 /bin/bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      
       - name: Load GPTK from cache if it exists
         id: gptk-cache
         uses: actions/cache@v3
@@ -49,9 +54,9 @@ jobs:
 
       - name: Prepare base GPTK patches
         run: |
-          brew tap apple/apple
+          arch -x86_64 /usr/local/bin/brew tap apple/apple
           # Chop off the head of the formula (keep only the patch section after __END__)
-          sed -n '/__END__/,$p' `brew --repo apple/apple`/Formula/game-porting-toolkit.rb | sed '1d' > gptk_basepatch.patch
+          sed -n '/__END__/,$p' `arch -x86_64 /usr/local/bin/brew --repo apple/apple`/Formula/game-porting-toolkit.rb | sed '1d' > gptk_basepatch.patch
 
       - name: Load CXWine Sources from cache
         id: cxwine-cache
@@ -101,7 +106,7 @@ jobs:
       - name: Install compiler
         if: steps.compiler-cache.outputs.cache-hit != 'true'
         run: |
-          brew install apple/apple/game-porting-toolkit-compiler
+          arch -x86_64 /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler
 
       - name: Save compiler to cache
         if: steps.compiler-cache.outputs.cache-hit != 'true'
@@ -113,7 +118,7 @@ jobs:
       - name: Relink compiler
         if: steps.compiler-cache.outputs.cache-hit == 'true'
         run: |
-          brew install apple/apple/game-porting-toolkit-compiler
+          /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler
           ln -s /usr/local/Cellar/game-porting-toolkit-compiler/0.1/ /usr/local/opt/game-porting-toolkit-compiler
 
       - if: matrix.flavour == 'Vulkan'
@@ -122,10 +127,10 @@ jobs:
           patch game-porting-toolkit.rb < patches/enable-vulkan-sdl.patch
       - name: Install GPTK
         run: |
-          brew install --build-bottle ./game-porting-toolkit.rb || true 
+          /usr/local/bin/brew install --build-bottle ./game-porting-toolkit.rb || true 
       - name: Package GPTK (Harbor)
         run: |
-          brew bottle apple/apple/game-porting-toolkit
+          /usr/local/bin/brew bottle apple/apple/game-porting-toolkit
           mkdir gptk_bottle
           mv *.tar.gz gptk_bottle
           touch gptk_bottle/.keep
