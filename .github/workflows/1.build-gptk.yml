@@ -1,5 +1,5 @@
 # Task to automatically build `apple/apple/game-porting-toolkit` 
-# and put the resulting Cellar into a dmg
+# and put the resulting Cellar into a tarball
 
 name: Build GPTK
 
@@ -147,7 +147,7 @@ jobs:
           path: gptk_bottle.tar.gz
       - name: Package GPTK (Whisky)
         run: |
-          ditto `brew --prefix game-porting-toolkit` Libraries/Wine
+          ditto `/usr/local/bin/brew --prefix game-porting-toolkit` Libraries/Wine
           touch Libraries/.keep
           rm -rvf Libraries/Wine/include
           rm -rvf Libraries/Wine/INSTALL_RECEIPT.json
