@@ -106,7 +106,6 @@ jobs:
       - name: Install compiler
         if: steps.compiler-cache.outputs.cache-hit != 'true'
         run: |
-          arch -x86_64 /usr/local/bin/brew install --build-from-source pkg-config
           arch -x86_64 /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler
 
       - name: Save compiler to cache
@@ -119,8 +118,12 @@ jobs:
       - name: Relink compiler
         if: steps.compiler-cache.outputs.cache-hit == 'true'
         run: |
-          /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler
+          arch -x86_64 /usr/local/bin/brew install apple/apple/game-porting-toolkit-compiler
           ln -s /usr/local/Cellar/game-porting-toolkit-compiler/0.1/ /usr/local/opt/game-porting-toolkit-compiler
+
+      - name: Install pkg-config from source
+        run: |
+          arch -x86_64 /usr/local/bin/brew install --build-from-source pkg-config
 
       - if: matrix.flavour == 'Vulkan'
         name: Patch the formula
