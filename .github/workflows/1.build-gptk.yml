@@ -19,7 +19,7 @@ jobs:
     runs-on: macos-14
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -29,7 +29,7 @@ jobs:
       
       - name: Load GPTK from cache if it exists
         id: gptk-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Game_Porting_Toolkit_1.1.dmg
           key: gptk-1.1
@@ -43,7 +43,7 @@ jobs:
   
       - name: Save GPTK to cache
         if: steps.gptk-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           key: gptk-1.1
           path: Game_Porting_Toolkit_1.1.dmg
@@ -60,7 +60,7 @@ jobs:
 
       - name: Load CXWine Sources from cache
         id: cxwine-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/cxsrc
           key: cxwine-22.1.1
@@ -74,7 +74,7 @@ jobs:
 
       - name: Save CXWine Sources to cache
         if: steps.cxwine-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           key: cxwine-22.1.1
           path: /tmp/cxsrc
@@ -98,7 +98,7 @@ jobs:
 
       - name: Check cache for compiler
         id: compiler-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /usr/local/Cellar/game-porting-toolkit-compiler
           key: game-porting-toolkit-compiler-0.1
@@ -110,7 +110,7 @@ jobs:
 
       - name: Save compiler to cache
         if: steps.compiler-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           key: game-porting-toolkit-compiler-0.1
           path: /usr/local/Cellar/game-porting-toolkit-compiler
@@ -141,7 +141,7 @@ jobs:
           ditto /Volumes/Game\ Porting\ Toolkit-1.1/redist/lib/ gptk_bottle/gptk_libs
           tar -zcvf gptk_bottle.tar.gz gptk_bottle          
       - name: Upload GPTK bottle (Harbor)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: GPTK ${{matrix.flavour}} (Harbor)
           path: gptk_bottle.tar.gz
@@ -158,13 +158,13 @@ jobs:
           touch gptk/.keep
           tar -zcvf gptk/gptk.tar.gz Libraries
       - name: Upload GPTK (Whisky)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: GPTK ${{matrix.flavour}} (Whisky)
           path: gptk
 
       - name: Upload the formula used to build GPTK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: GPTK ${{matrix.flavour}} formula
           path: game-porting-toolkit.rb
